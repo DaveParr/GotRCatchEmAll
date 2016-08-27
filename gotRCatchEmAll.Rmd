@@ -1,0 +1,48 @@
+---
+title: "Got R? Catch 'em all!"
+output: revealjs::revealjs_presentation
+---
+
+# Inspriation
+
+dsparks poke plot
+
+## Dog Photo
+
+## A newer pokedex
+
+
+# Pluck the data from Bulbapedia
+
+## What tools will we use?
+
+```{r}
+library(rvest)
+library(magrittr)
+```
+
+## Master Ballin'
+
+```{r}
+baseStats <-
+  read_html(
+    x = "http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)"
+    ) %>%
+  html_node(
+    css = "div table"
+    ) %>%
+  html_table()
+```
+
+# Slide with R Code and Output
+
+```{r}
+summary(cars)
+```
+
+# Slide with Plot
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
