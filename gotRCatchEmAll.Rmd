@@ -12,37 +12,82 @@ dsparks poke plot
 ## A newer pokedex
 
 
-# Pluck the data from Bulbapedia
+# Pluck the data from Bulbapedia {data-background="images/Pluck_IV.png"}
 
 ## What tools will we use?
 
 ```{r}
+
+
+```
+
+## PokedexR {data-background="images/rotomdex.jpg"}
+
+```{r}
 library(rvest)
 library(magrittr)
-```
 
-## Master Ballin'
-
-```{r}
 baseStats <-
-  read_html(
+  xml2::read_html( # Read HTML or XML
     x = "http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)"
+    ) %>% # This is a pipe operator from magrittr
+  rvest::html_node( # Extract pieces out of HTML using XPath and css selectors
+    css = "div table" # rvest recommends using 'Selector Gadget'
     ) %>%
-  html_node(
-    css = "div table"
-    ) %>%
-  html_table()
+  rvest::html_table() # Parse an html table into a data frame
+
+head(baseStats)
 ```
 
-# Slide with R Code and Output
+## SelectorGadget (like a silph scope but for web pages) {data-background="images/Silph_Scope_Marowak_PO.png"}
+
+`rvest` recommends [SelectorGadget](http://selectorgadget.com/) is a chrome extension for CSS selector generation. 
+
+In Pokemon terms, it "Makes the Invisible Plain to See!" by exposing which parts of the html correspond to which bits of the user facing webpage.
+
+![SelectorGadget](images/SelectorGadget.png)
+
+However, I had to fudge it a bit, as it didn't pick up the table properly.
+
+## Muky Data {data-background="images/mukwave.jpg"}
 
 ```{r}
-summary(cars)
+library(data.table)
+
+baseStats <- data.table::as.data.table(baseStats)
+
+# Remove second col with only "NA"
+baseStats[, "" := NULL] 
+# Rename cols 1 and 2 to something workable
+data.table::setnames(baseStats, 1:2, c("DexNo", "Pokemon")) 
+
+baseStats
 ```
 
-# Slide with Plot
+# A beter Pokeball
 
-```{r, echo=FALSE}
-plot(cars)
+## Master Ballin' {data-background="images/master-ball-590x262.jpg"}
+
+```{r}
+library(stringr)
+
+baseStats[, imgURL := read_html(
+    x = "http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)"
+    ) %>% 
+  rvest::html_nodes(
+      css = "#mw-content-text img"
+      ) %>% # css to identify all strings for pokemon urls
+  stringr::str_split_fixed(
+    "src=\"", 
+    n = 2
+    ) %>% .[,2] %>% # splits first part out then drops first part
+  stringr::str_split_fixed(
+    "\" width=", 
+    n = 2) %>% .[,1]]
 ```
 
+## Let's check someone's PC!{data-background="images/bootedPC.png"}
+
+```{r}
+baseStats
+```
