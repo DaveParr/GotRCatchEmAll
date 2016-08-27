@@ -1,25 +1,11 @@
 ---
 title: "Got R? Catch 'em all!"
 output: revealjs::revealjs_presentation
+framework: revealjs
+ext_widgets: [rbokeh]
 ---
 
-# Inspriation
-
-dsparks poke plot
-
-## Dog Photo
-
-## A newer pokedex
-
-
 # Pluck the data from Bulbapedia {data-background="images/Pluck_IV.png"}
-
-## What tools will we use?
-
-```{r}
-
-
-```
 
 ## PokedexR {data-background="images/rotomdex.jpg"}
 
@@ -86,8 +72,39 @@ baseStats[, imgURL := read_html(
     n = 2) %>% .[,1]]
 ```
 
-## Let's check someone's PC!{data-background="images/bootedPC.png"}
+## Congratulations, you caught all 151! {data-background="images/everypokemon.jpg"}
 
 ```{r}
 baseStats
+```
+
+## Your Pokemon has been moved to "Someones PC"! {data-background="images/someonesPC.png"}
+
+```{r eval=FALSE}
+dir.create("./someonesPC/")
+
+# Use for loop as data.table only returns last if this is run within DT function
+for(pkmn in baseStats[, DexNo]){
+  download.file(baseStats[pkmn == DexNo, 
+                          imgURL], 
+                destfile = paste0("./someonesPC/", pkmn, ".png"), 
+                mode = "wb") # Makes this work for windows
+}
+```
+
+# vERY BEST
+
+```{r}
+library(rbokeh)
+
+P <- figure() %>% 
+ly_image_url(
+  data = baseStats,
+  x = DexNo,
+  y = Attack + Defense + HP + Speed + Special,
+  w = 10,
+  h = 20,
+  image_url = imgURL
+  )
+P
 ```
