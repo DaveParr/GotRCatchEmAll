@@ -2,7 +2,6 @@
 title: "Got R? Catch 'em all!"
 output: revealjs::revealjs_presentation
 framework: revealjs
-ext_widgets: [rbokeh]
 ---
 
 # Pluck the data from Bulbapedia {data-background="images/Pluck_IV.png"}
@@ -92,7 +91,9 @@ for(pkmn in baseStats[, DexNo]){
 }
 ```
 
-# vERY BEST
+# I'm gonna be...
+
+## ...the very best...
 
 ```{r}
 library(rbokeh)
@@ -106,5 +107,10 @@ ly_image_url(
   h = 20,
   image_url = imgURL
   )
+```
+
+## ... like no one ever was!
+
+```{r}
 P
 ```
