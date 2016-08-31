@@ -1,7 +1,6 @@
 ---
 title: "Got R? Catch 'em all!"
-output: revealjs::revealjs_presentation
-framework: revealjs
+always_allow_html: yes
 ---
 
 # Pluck the data from Bulbapedia {data-background="images/Pluck_IV.png"}
@@ -12,15 +11,24 @@ framework: revealjs
 library(rvest)
 library(magrittr)
 
+bulbagarden <- "http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)"
 baseStats <-
-  xml2::read_html( # Read HTML or XML
-    x = "http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)"
+  # Read HTML or XML
+  xml2::read_html( 
+    x = bulbagarden
     ) %>% # This is a pipe operator from magrittr
-  rvest::html_node( # Extract pieces out of HTML using XPath and css selectors
-    css = "div table" # rvest recommends using 'Selector Gadget'
+  # Extract pieces out of HTML using css selectors
+  rvest::html_node(
+    # rvest recommends using 'Selector Gadget'
+    css = "div table" 
     ) %>%
-  rvest::html_table() # Parse an html table into a data frame
+  # Parse an html table into a data frame
+  rvest::html_table() 
+```
 
+## All the data {data-background="images/rotomdex.jpg"}
+
+```{r}
 head(baseStats)
 ```
 
@@ -28,7 +36,7 @@ head(baseStats)
 
 `rvest` recommends [SelectorGadget](http://selectorgadget.com/) is a chrome extension for CSS selector generation. 
 
-In Pokemon terms, it "Makes the Invisible Plain to See!" by exposing which parts of the html correspond to which bits of the user facing webpage.
+It "Makes the Invisible Plain to See!" by exposing which parts of the html correspond to which bits of the user facing webpage.
 
 ![SelectorGadget](images/SelectorGadget.png)
 
@@ -42,14 +50,14 @@ library(data.table)
 baseStats <- data.table::as.data.table(baseStats)
 
 # Remove second col with only "NA"
-baseStats[, "" := NULL] 
+baseStats[, "" := NULL]
 # Rename cols 1 and 2 to something workable
-data.table::setnames(baseStats, 1:2, c("DexNo", "Pokemon")) 
-
-baseStats
+data.table::setnames(baseStats, 
+                     1:2, 
+                     c("DexNo", "Pokemon"))
 ```
 
-# A beter Pokeball
+# A better Pokeball
 
 ## Master Ballin' {data-background="images/master-ball-590x262.jpg"}
 
@@ -57,39 +65,49 @@ baseStats
 library(stringr)
 
 baseStats[, imgURL := read_html(
-    x = "http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)"
+    x = bulbagarden# set x to be bulbagarden url
     ) %>% 
   rvest::html_nodes(
-      css = "#mw-content-text img"
-      ) %>% # css to identify all strings for pokemon urls
+    # css to identify all strings for pokemon image urls
+    css = "#mw-content-text img"
+    ) %>% # split string at point
   stringr::str_split_fixed(
     "src=\"", 
     n = 2
-    ) %>% .[,2] %>% # splits first part out then drops first part
+    ) %>% # use second part of string
+    .[,2] %>% # split string at point again
   stringr::str_split_fixed(
     "\" width=", 
-    n = 2) %>% .[,1]]
+    n = 2) %>% # use first part of string
+    .[,1]]
 ```
 
-## Congratulations, you caught all 151! {data-background="images/everypokemon.jpg"}
+## Congratulations, you caught all 151 image urls! {data-background="images/everypokemon.jpg"}
 
 ```{r}
-baseStats
+head(baseStats)
 ```
 
-## Your Pokemon has been moved to "Someones PC"! {data-background="images/someonesPC.png"}
+## Your Pokemon have been moved to "Someones PC"! {data-background="images/someonesPC.png"}
 
 ```{r eval=FALSE}
 dir.create("./someonesPC/")
 
-# Use for loop as data.table only returns last if this is run within DT function
+# Use for loop as data.table only 
+# returns last item if this is run within DT function
 for(pkmn in baseStats[, DexNo]){
   download.file(baseStats[pkmn == DexNo, 
                           imgURL], 
-                destfile = paste0("./someonesPC/", pkmn, ".png"), 
-                mode = "wb") # Makes this work for windows
+                destfile = paste0("./someonesPC/", 
+                                  pkmn, ".png"),
+                # Makes this work for windows
+                mode = "wb") 
 }
 ```
+
+## DaveRGP checked "Someones PC"! {data-background="images/someonesPC.png"}
+
+![someones PC](images/someonesPCout.png)
 
 # I'm gonna be...
 
@@ -99,13 +117,14 @@ for(pkmn in baseStats[, DexNo]){
 library(rbokeh)
 
 P <- figure() %>% 
-ly_image_url(
-  data = baseStats,
-  x = DexNo,
-  y = Attack + Defense + HP + Speed + Special,
-  w = 10,
-  h = 20,
-  image_url = imgURL
+  # layer to get .png from url as points
+  ly_image_url(
+    data = baseStats,
+    x = DexNo,
+    y = Total,
+    w = 10,
+    h = 20,
+    image_url = imgURL
   )
 ```
 
@@ -114,3 +133,7 @@ ly_image_url(
 ```{r}
 P
 ```
+
+![No One Ever Was](images/noOneEverWas.png)
+
+## Trainer Card
