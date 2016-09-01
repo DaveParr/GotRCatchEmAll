@@ -157,7 +157,7 @@ David Parr
 
 github: [DaveRGP](https://github.com/DaveRGP)
 
-twitter: [@biomimicron](https://twitter.com/biomimicron)
+twitter: @biomimicron
 
 website: [davergp.github.io](davergp.github.io)
 
