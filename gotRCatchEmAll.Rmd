@@ -1,22 +1,27 @@
 ---
 title: "Got R? Catch 'em all!"
-always_allow_html: yes
+framework: revealjs
+output: daveStyle::daveRevealSlideStyle
 ---
 
-# 3 steps
+# Objective
+
+## 3 Web scraping methods
 
 * We're gonna' do 3 different web scraping tasks in 5 minutes from a single site
 1. Scrape a table of original 151 pokemon stats from one webpage
 2. Scrape 151 images of pokemon from seperate 151 webpages
 3. Build a plot that scrapes the .pngs of each pokemon from 151 webpages **by itself**
 
-# Pluck the data from Bulbapedia {data-background="images/Pluck_IV.png"}
+# Method 1 - Rvest Table Scraping
+
+## Pluck the data from Bulbapedia {data-background="images/Pluck_IV.png"}
 
 * Bulbapedia is a community website with tonnes of info on every pokemon
   + http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)
 ![bulbapedia](images/bulbapedia.png)
 
-# PokedexR {data-background="images/rotomdex.jpg"}
+## PokedexR {data-background="images/rotomdex.jpg"}
 
 ```{r}
 library(rvest)
@@ -37,20 +42,20 @@ baseStats <-
   rvest::html_table() 
 ```
 
-# SelectorGadget (like a silph scope but for web pages) {data-background="images/Silph_Scope_Marowak_PO.png"}
+## SelectorGadget (like a silph scope but for web pages) {data-background="images/Silph_Scope_Marowak_PO.png"}
 
 * `rvest` recommends [SelectorGadget](http://selectorgadget.com/) is a chrome extension for CSS selector generation. 
 * It "Makes the Invisible Plain to See!" by exposing which parts of the html correspond to which bits of the user facing webpage.
 ![SelectorGadget](images/SelectorGadget.png)
 * However, I had to fudge it a bit, as it didn't pick up the table properly.
 
-# All the data {data-background="images/rotomdex.jpg"}
+## All the data {data-background="images/rotomdex.jpg"}
 
 ```{r}
 head(baseStats)
 ```
 
-# Muky Data {data-background="images/mukwave.jpg"}
+## Muky Data {data-background="images/mukwave.jpg"}
 
 ```{r}
 library(data.table)
@@ -65,7 +70,9 @@ data.table::setnames(baseStats,
                      c("DexNo", "Pokemon"))
 ```
 
-# Master Ballin' {data-background="images/master-ball-590x262.jpg"}
+# Method 2 - Rvest image scraping
+
+## Master Ballin' {data-background="images/master-ball-590x262.jpg"}
 
 ```{r}
 library(stringr)
@@ -88,13 +95,13 @@ baseStats[, imgURL := read_html(
     .[,1]]
 ```
 
-# Congratulations, you caught all 151 image urls! {data-background="images/everypokemon.jpg"}
+## Congratulations, you caught all 151 image urls! {data-background="images/everypokemon.jpg"}
 
 ```{r}
 head(baseStats)
 ```
 
-# Your Pokemon have been moved to "Someones PC"! {data-background="images/someonesPC.png"}
+## Your Pokemon have been moved to "Someones PC"! {data-background="images/someonesPC.png"}
 
 ```{r eval=FALSE}
 dir.create("./someonesPC/")
@@ -111,11 +118,13 @@ for(pkmn in baseStats[, DexNo]){
 }
 ```
 
-# DaveRGP checked "Someones PC"! {data-background="images/someonesPC.png"}
+## DaveRGP checked "Someones PC"! {data-background="images/someonesPC.png"}
 
 ![someones PC](images/someonesPCout.png)
 
-# I'm gonna be the very best...
+# Method 3 - Rbokeh URL plotting
+
+## I'm gonna be the very best...
 
 ```{r}
 library(rbokeh)
@@ -132,7 +141,7 @@ P <- figure() %>%
   )
 ```
 
-# ...like no one ever was!
+## ...like no one ever was!
 
 ```{r eval = FALSE}
 P
@@ -141,6 +150,8 @@ P
 ![No One Ever Was](images/noOneEverWas.png)
 
 # Trainer Tips
+
+## Pokemon Programmers can...
 
 * Use `xml2::read_html()` to read the whole page into memory
 * Use `rvest::html_node()` to find individual parts of the page
@@ -153,7 +164,7 @@ P
 
 # Trainer Card
 
-David Parr
+## David Parr
 
 github: [DaveRGP](https://github.com/DaveRGP)
 
