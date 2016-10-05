@@ -4,30 +4,33 @@ framework: revealjs
 output: daveStyle::daveRevealSlideStyle
 ---
 
-# Objective
+# Objective {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
-## 3 Web scraping methods
+## 3 Web scraping methods {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
 * We're gonna' do 3 different web scraping tasks in 5 minutes from a single site
-1. Scrape a table of original 151 pokemon stats from one webpage
-2. Scrape 151 images of pokemon from seperate 151 webpages
-3. Build a plot that scrapes the .pngs of each pokemon from 151 webpages **by itself**
+1. Scrape a table of original 151 Pokemon stats from one webpage
+2. Scrape 151 images of Pokemon from separate 151 webpages
+3. Build a plot that scrapes the .pngs of each Pokemon from 151 webpages **by itself**
 
-# Method 1 - Rvest Table Scraping
+# Pokeball - Rvest Table Scraping {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
-## Pluck the data from Bulbapedia {data-background="images/Pluck_IV.png"}
+## Pluck the data from Bulbapedia {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
-* Bulbapedia is a community website with tonnes of info on every pokemon
-  + http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)
 ![bulbapedia](images/bulbapedia.png)
 
-## PokedexR {data-background="images/rotomdex.jpg"}
+## Libraries and Data {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
 ```{r}
 library(rvest)
 library(magrittr)
 
 bulbagarden <- "http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)"
+```
+
+## PokedexR {data-background="images/pokemon_pokeball_by_mr_droy.png"}
+
+```{r}
 baseStats <-
   # Read HTML or XML
   xml2::read_html( 
@@ -42,17 +45,17 @@ baseStats <-
   rvest::html_table() 
 ```
 
-## SelectorGadget (like a silph scope but for web pages) {data-background="images/Silph_Scope_Marowak_PO.png"}
+## SelectorGadget (like a silph scope but for web pages) {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
 * `rvest` recommends [SelectorGadget](http://selectorgadget.com/) is a chrome extension for CSS selector generation. 
 * It "Makes the Invisible Plain to See!" by exposing which parts of the html correspond to which bits of the user facing webpage.
 ![SelectorGadget](images/SelectorGadget.png)
 * However, I had to fudge it a bit, as it didn't pick up the table properly.
 
-## All the data {data-background="images/rotomdex.jpg"}
+## All the data {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
 ```{r}
-head(baseStats)
+head(baseStats, n = 3)
 ```
 
 ## Muky Data {data-background="images/mukwave.jpg"}
@@ -70,38 +73,33 @@ data.table::setnames(baseStats,
                      c("DexNo", "Pokemon"))
 ```
 
-# Method 2 - Rvest image scraping
+# Greatball - Rvest image scraping {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
-## Master Ballin' {data-background="images/master-ball-590x262.jpg"}
+## Grab all 151 images {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
 ```{r}
 library(stringr)
-
 baseStats[, imgURL := read_html(
-    x = bulbagarden# set x to be bulbagarden url
+    x = bulbagarden # set x to be bulbagarden url
     ) %>% 
   rvest::html_nodes(
-    # css to identify EVWERY string for pokemon image urls
-    css = "#mw-content-text img"
+    css = "#mw-content-text img" # css to identify EVWERY string for pokemon image urls
     ) %>% # split string at point
-  stringr::str_split_fixed(
-    "src=\"", 
-    n = 2
+  stringr::str_split_fixed("src=\"", n = 2
     ) %>% # use second part of string
     .[,2] %>% # split string at point again
   stringr::str_split_fixed(
-    "\" width=", 
-    n = 2) %>% # use first part of string
+    "\" width=", n = 2) %>% # use first part of string
     .[,1]]
 ```
 
-## Congratulations, you caught all 151 image urls! {data-background="images/everypokemon.jpg"}
+## Congratulations, you caught all 151 image urls! {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
 ```{r}
-head(baseStats)
+head(baseStats, n = 3)
 ```
 
-## Your Pokemon have been moved to "Someones PC"! {data-background="images/someonesPC.png"}
+## Your Pokemon have been moved to "Someones PC"! {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
 ```{r eval=FALSE}
 dir.create("./someonesPC/")
@@ -113,18 +111,17 @@ for(pkmn in baseStats[, DexNo]){
                           imgURL], 
                 destfile = paste0("./someonesPC/", 
                                   pkmn, ".png"),
-                # Makes this work for windows
-                mode = "wb") 
+                mode = "wb") # Makes this work for windows
 }
 ```
 
-## DaveRGP checked "Someones PC"! {data-background="images/someonesPC.png"}
+## DaveRGP checked "Someones PC"! {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
 ![someones PC](images/someonesPCout.png)
 
-# Method 3 - Rbokeh URL plotting
+# Masterballin' - Rbokeh URL plotting {data-background="images/pokemon_master_ball_by_mr_droy.png"}
 
-## I'm gonna be the very best...
+## I'm gonna be the very best... {data-background="images/pokemon_master_ball_by_mr_droy.png"}
 
 ```{r}
 library(rbokeh)
@@ -141,13 +138,11 @@ P <- figure() %>%
   )
 ```
 
-## ...like no one ever was!
+## ...like no one ever was! {data-background="images/pokemon_master_ball_by_mr_droy.png"}
 
-```{r eval = FALSE}
+```{r echo = FALSE}
 P
 ```
-
-![No One Ever Was](images/noOneEverWas.png)
 
 # Trainer Tips
 
