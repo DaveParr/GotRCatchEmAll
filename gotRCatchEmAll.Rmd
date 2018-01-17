@@ -62,16 +62,9 @@ head(baseStats, n = 3)
 ## Muky Data {data-background="images/mukwave.jpg"}
 
 ```{r}
-library(data.table)
-
-baseStats <- data.table::as.data.table(baseStats)
-
-# Remove second col with only "NA"
-baseStats[, "" := NULL]
-# Rename cols 1 and 2 to something workable
-data.table::setnames(baseStats, 
-                     1:2, 
-                     c("DexNo", "Pokemon"))
+baseStats %>% 
+  select(-2) %>% 
+  rename(DexNo = `#`, Pokemon = !!names(.[2]))
 ```
 
 # Greatball - Rvest image scraping {data-background="images/pokemon_greatball_by_mr_droy.png"}
