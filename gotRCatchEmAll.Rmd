@@ -130,7 +130,8 @@ P <- figure() %>%
     y = Total,
     w = 10,
     h = 20,
-    image_url = imgURL
+    image_url = img_url,
+    anchor = "center"
   )
 ```
 
