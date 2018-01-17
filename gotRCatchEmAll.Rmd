@@ -100,14 +100,14 @@ head(baseStats, n = 3)
 ```{r eval=FALSE}
 dir.create("./someonesPC/")
 
-# Use for loop as data.table only 
-# returns last item if this is run within DT function
-for(pkmn in baseStats[, DexNo]){
-  download.file(baseStats[pkmn == DexNo, 
-                          imgURL], 
-                destfile = paste0("./someonesPC/", 
-                                  pkmn, ".png"),
-                mode = "wb") # Makes this work for windows
+for(url in baseStats$img_url) {
+  download.file(
+    url,
+    destfile = paste0("./someonesPC/",
+                      baseStats[baseStats$img_url == url,]$DexNo,
+                      ".png"), 
+    mode = "wb"
+    )
 }
 ```
 
