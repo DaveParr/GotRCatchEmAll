@@ -22,6 +22,7 @@ output: daveStyle::daveRevealSlideStyle
 ## Libraries and Data {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
 ```{r}
+library(tidyverse)
 library(rvest)
 library(magrittr)
 
