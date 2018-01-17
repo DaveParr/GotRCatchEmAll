@@ -145,12 +145,12 @@ P
 
 ## Pokemon Programmers can...
 
+* Write R functions
+* Write base R for loops
 * Use `xml2::read_html()` to read the whole page into memory
-* Use `rvest::html_node()` to find individual parts of the page
-+ Use `rvest::html_nodeS()` to return multiple items
+    + Use `rvest::html_node()` to find individual parts of the page
+    + Use `rvest::html_nodeS()` to return multiple items
 * Return a data.frame with `rvest::html_table()`
-* `data.table` can be finickity about making connections
-+ using for loops might solve that
 * Use `stringr` for manipulating urls
 * `rbokeh` is an interactive graphics package with an argument for using urls to source .png icons
 
