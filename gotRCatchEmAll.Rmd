@@ -64,7 +64,8 @@ head(baseStats, n = 3)
 ```{r}
 baseStats %>% 
   select(-2) %>% 
-  rename(DexNo = `#`, Pokemon = !!names(.[2]))
+  rename(DexNo = `#`, 
+         Pokemon = !!names(.[2])) -> baseStats
 ```
 
 # Greatball - Rvest image scraping {data-background="images/pokemon_greatball_by_mr_droy.png"}
@@ -72,19 +73,20 @@ baseStats %>%
 ## Grab all 151 images {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
 ```{r}
-library(stringr)
-baseStats[, imgURL := read_html(
-    x = bulbagarden # set x to be bulbagarden url
-    ) %>% 
-  rvest::html_nodes(
-    css = "#mw-content-text img" # css to identify EVWERY string for pokemon image urls
-    ) %>% # split string at point
-  stringr::str_split_fixed("src=\"", n = 2
-    ) %>% # use second part of string
-    .[,2] %>% # split string at point again
-  stringr::str_split_fixed(
-    "\" width=", n = 2) %>% # use first part of string
-    .[,1]]
+get_img_url <- function(x, url = bulbagarden) {
+  read_html(url) %>%
+    html_nodes(css = "#mw-content-text img") %>%
+    str_split_fixed("src=\"", n = 2) %>%
+    .[, 2] %>%
+    str_split_fixed("\" width=", n = 2) %>%
+    .[, 1] %>%
+    paste0("https:", .)
+}
+
+baseStats %>% 
+  mutate(
+    img_url = get_img_url(Pokemon)
+    ) -> baseStats
 ```
 
 ## Congratulations, you caught all 151 image urls! {data-background="images/pokemon_greatball_by_mr_droy.png"}
