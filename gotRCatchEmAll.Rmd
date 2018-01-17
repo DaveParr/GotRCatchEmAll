@@ -21,10 +21,10 @@ output: daveStyle::daveRevealSlideStyle
 
 ## Libraries and Data {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(rvest)
-library(magrittr)
+library(stringr)
 
 bulbagarden <- "http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)"
 ```
