@@ -10,7 +10,7 @@ output: daveStyle::daveRevealSlideStyle
 
 * We're gonna' do 3 different web scraping tasks in 5 minutes from a single site
 1. Scrape a table of original 151 Pokemon stats from one webpage
-2. Scrape 151 images of Pokemon from separate 151 webpages
+2. Scrape 151 images of Pokemon from 151 seperate webpages
 3. Build a plot that scrapes the .pngs of each Pokemon from 151 webpages **by itself**
 
 ![starters](images/pokemon-red-screenshot-680x3921.jpg){height=50%, width=50%}
@@ -36,12 +36,8 @@ bulbagarden <- "http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_b
 
 ```{r read table}
 baseStats <-
-  read_html( 
-    x = bulbagarden
-    ) %>% 
-  html_node(
-    css = "div table" 
-    ) %>%
+  read_html(x = bulbagarden) %>%
+  html_node(css = "div table") %>%
   html_table() 
 ```
 
@@ -91,7 +87,7 @@ baseStats %>%
 ## Congratulations, you caught all 151 image urls! {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
 ```{r view results with url}
-baseStats$img_url[1:3]
+baseStats[1:3]
 ```
 
 ## Your Pokemon have been moved to "Someones PC"! {data-background="images/pokemon_greatball_by_mr_droy.png"}
@@ -113,7 +109,7 @@ for(url in baseStats$img_url) {
 
 ## DaveRGP checked "Someones PC"! {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
-![someones PC](images/someonesPCout.png)
+![someones PC](images/someonesPCoutMac.png)
 
 # Masterballin' - Rbokeh URL plotting {data-background="images/pokemon_master_ball_by_mr_droy.png"}
 
@@ -142,16 +138,17 @@ P
 
 # Trainer Tips
 
-## Pokemon Programmers can... 
+## ProgramRmons can... 
 
 * Write R functions
 * Write base R for loops
-* Use `xml2::read_html()` to read the whole page into memory
+* Use web scraping functions from packages
+    + Use `xml2::read_html()` to read the whole page into memory
     + Use `rvest::html_node()` to find individual parts of the page
     + Use `rvest::html_nodes()` (plural) to return multiple items
-* Return a data.frame with `rvest::html_table()`
-* Use `stringr` for manipulating urls
-* `rbokeh` is an interactive graphics package with an argument for using urls to source .png icons
+    + Use `rvest::html_table()` to return a data.frame (matrix)
+* Use `stringr` package for manipulating urls
+* Use `rbokeh` package to make interactive plots with .pngs sourced by url
 
 ![squirtles](images/squirtle-squad.jpg){height="25%" width="25%"}
 
@@ -160,9 +157,7 @@ P
 ## David Parr
 
 github: [DaveRGP](https://github.com/DaveRGP)
+  
+this project: https://github.com/DaveRGP/GotRCatchEmAll
 
-twitter: @biomimicron
-
-website: [davergp.github.io](davergp.github.io)
-
-Pokemon Field Studies: [davergp.github.io/Pokemon_FieldStudies/](http://davergp.github.io/Pokemon_FieldStudies/) 
+this presentation: https://rpubs.com/DaveRGP/GotRCatchEmAll
