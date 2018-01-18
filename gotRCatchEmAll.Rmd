@@ -122,7 +122,7 @@ for(url in baseStats$img_url) {
 ```{r plot bokeh}
 library(rbokeh)
 
-P <- figure() %>% 
+P <- figure(title = "Pokemon by Total Stats in Pokedex Order") %>% 
   ly_image_url(
     data = baseStats,
     x = DexNo,
