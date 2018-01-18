@@ -13,6 +13,8 @@ output: daveStyle::daveRevealSlideStyle
 2. Scrape 151 images of Pokemon from separate 151 webpages
 3. Build a plot that scrapes the .pngs of each Pokemon from 151 webpages **by itself**
 
+![starters](images/pokemon-red-screenshot-680x3921.jpg){height=50%, width=50%}
+
 # Pokeball - Rvest Table Scraping {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
 ## Pluck the data from Bulbapedia {data-background="images/pokemon_pokeball_by_mr_droy.png"}
@@ -21,8 +23,9 @@ output: daveStyle::daveRevealSlideStyle
 
 ## Libraries and Data {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
-```{r message=FALSE, warning=FALSE}
+```{r set up resources, message=FALSE, warning=FALSE}
 library(tidyverse)
+library(xml2)
 library(rvest)
 library(stringr)
 
@@ -31,19 +34,15 @@ bulbagarden <- "http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_b
 
 ## PokedexR {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
-```{r}
+```{r read table}
 baseStats <-
-  # Read HTML or XML
-  xml2::read_html( 
+  read_html( 
     x = bulbagarden
-    ) %>% # This is a pipe operator from magrittr
-  # Extract pieces out of HTML using css selectors
-  rvest::html_node(
-    # rvest recommends using 'Selector Gadget'
+    ) %>% 
+  html_node(
     css = "div table" 
     ) %>%
-  # Parse an html table into a data frame
-  rvest::html_table() 
+  html_table() 
 ```
 
 ## SelectorGadget (like a silph scope but for web pages) {data-background="images/pokemon_pokeball_by_mr_droy.png"}
@@ -55,13 +54,13 @@ baseStats <-
 
 ## All the data {data-background="images/pokemon_pokeball_by_mr_droy.png"}
 
-```{r}
+```{r view results}
 head(baseStats, n = 3)
 ```
 
 ## Muky Data {data-background="images/mukwave.jpg"}
 
-```{r}
+```{r rename columns}
 baseStats %>% 
   select(-2) %>% 
   rename(DexNo = `#`, 
@@ -72,7 +71,7 @@ baseStats %>%
 
 ## Grab all 151 images {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
-```{r}
+```{r grab images}
 get_img_url <- function(x, url = bulbagarden) {
   read_html(url) %>%
     html_nodes(css = "#mw-content-text img") %>%
@@ -91,21 +90,22 @@ baseStats %>%
 
 ## Congratulations, you caught all 151 image urls! {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
-```{r}
-head(baseStats, n = 3)
+```{r view results with url}
+baseStats$img_url[1:3]
 ```
 
 ## Your Pokemon have been moved to "Someones PC"! {data-background="images/pokemon_greatball_by_mr_droy.png"}
 
-```{r eval=FALSE}
+```{r catch your pokemon, eval=FALSE}
 dir.create("./someonesPC/")
 
 for(url in baseStats$img_url) {
   download.file(
     url,
-    destfile = paste0("./someonesPC/",
-                      baseStats[baseStats$img_url == url,]$DexNo,
-                      ".png"), 
+    destfile = paste0(
+      "./someonesPC/",
+      baseStats[baseStats$img_url == url,]$DexNo,
+      ".png"), 
     mode = "wb"
     )
 }
@@ -119,11 +119,10 @@ for(url in baseStats$img_url) {
 
 ## I'm gonna be the very best... {data-background="images/pokemon_master_ball_by_mr_droy.png"}
 
-```{r}
+```{r plot bokeh}
 library(rbokeh)
 
 P <- figure() %>% 
-  # layer to get .png from url as points
   ly_image_url(
     data = baseStats,
     x = DexNo,
@@ -137,22 +136,24 @@ P <- figure() %>%
 
 ## ...like no one ever was! {data-background="images/pokemon_master_ball_by_mr_droy.png"}
 
-```{r echo = FALSE}
+```{r view bokeh, echo = FALSE}
 P
 ```
 
 # Trainer Tips
 
-## Pokemon Programmers can...
+## Pokemon Programmers can... 
 
 * Write R functions
 * Write base R for loops
 * Use `xml2::read_html()` to read the whole page into memory
     + Use `rvest::html_node()` to find individual parts of the page
-    + Use `rvest::html_nodeS()` to return multiple items
+    + Use `rvest::html_nodes()` (plural) to return multiple items
 * Return a data.frame with `rvest::html_table()`
 * Use `stringr` for manipulating urls
 * `rbokeh` is an interactive graphics package with an argument for using urls to source .png icons
+
+![squirtles](images/squirtle-squad.jpg){height="25%" width="25%"}
 
 # Trainer Card
 
